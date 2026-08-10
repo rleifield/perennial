@@ -5,7 +5,7 @@ import { ContactBlock } from "@/components/ContactBlock";
 import { LogoMark } from "@/components/LogoMark";
 import { Navigation } from "@/components/Navigation";
 import { PageContainer } from "@/components/PageContainer";
-import { ProjectList } from "@/data/projects";
+import { projects } from "@/data/projects";
 
 const SCROLL_KEY = "home-scroll";
 
@@ -45,12 +45,12 @@ export default function Home() {
             {/* projects list */}
             <div>
               {/* project item */}
-              {ProjectList.map((project) => (
-                <Link href={`/project/${project.id}`} key={project.title}>
-                  <div className="relative" key={project.title}>
+              {projects.map((project) => (
+                <Link href={`/project/${project.slug}`} key={project.slug}>
+                  <div className="relative">
                     <img
-                      src={project.image}
-                      alt="sebastian"
+                      src={project.mainImage}
+                      alt={project.title}
                       className="max-h-screen w-full h-full object-contain"
                     />
                     <div className="absolute top-6 sm:top-12 right-0 left-0">

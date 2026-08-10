@@ -3,7 +3,7 @@ import { ContactBlock } from "@/components/ContactBlock";
 import { LogoMark } from "@/components/LogoMark";
 import { Navigation } from "@/components/Navigation";
 import { PageContainer } from "@/components/PageContainer";
-import { ProjectList } from "@/data/projects";
+import { projects } from "@/data/projects";
 
 export default function Index() {
   return (
@@ -11,11 +11,11 @@ export default function Index() {
       <Navigation />
       <div className="min-h-screen">
         <div className="max-w-[440px] mx-auto -mt-6">
-          {ProjectList.map((project) => (
-            <p key={project.title}>
+          {projects.map((project) => (
+            <p key={project.slug}>
               <LogoMark visible={false} />
               <Link
-                href={`/project/${project.id}`}
+                href={`/project/${project.slug}`}
                 className="uppercase hover:underline"
               >
                 {project.title}
