@@ -1,78 +1,100 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { ContactBlock } from "@/components/ContactBlock";
+import { LogoMark } from "@/components/LogoMark";
+import { Navigation } from "@/components/Navigation";
+import { PageContainer } from "@/components/PageContainer";
+import { ProjectList } from "@/data/projects";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const SCROLL_KEY = "home-scroll";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Restore the scroll position saved when we last left the homepage, so
+    // returning via "close" feels like dismissing an overlay in place.
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved !== null) {
+      window.scrollTo(0, parseInt(saved, 10));
+      sessionStorage.removeItem(SCROLL_KEY);
+    }
+
+    // Save the position on the way out (to /i or a project page).
+    const save = () =>
+      sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+    router.events.on("routeChangeStart", save);
+    return () => router.events.off("routeChangeStart", save);
+  }, [router]);
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
-    >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the index.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <PageContainer>
+      <Navigation />
+      <div>
+        <div className="-mt-6">
+          <div className="flex flex-col gap-24">
+            {/* homepage top text */}
+            <div className="max-w-[440px] mx-auto">
+              <p>
+                <LogoMark visible={false} />
+                is an architecture and design studio based in Los Angeles,
+                California.
+              </p>
+            </div>
+            {/* projects list */}
+            <div>
+              {/* project item */}
+              {ProjectList.map((project) => (
+                <Link href={`/project/${project.id}`} key={project.title}>
+                  <div className="relative" key={project.title}>
+                    <img
+                      src={project.image}
+                      alt="sebastian"
+                      className="max-h-screen w-full h-full object-contain"
+                    />
+                    <div className="absolute top-6 sm:top-12 right-0 left-0">
+                      <div className="max-w-[440px] mx-auto">
+                        <p>
+                          <LogoMark visible={false} />
+                          <span className="uppercase">{project.title}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* homepage footer item*/}
+            <div className="max-w-[440px] mx-auto">
+              <p>
+                <LogoMark visible={false} />
+                clients and collaborators: LACA, The Broad, Hauser & Wirth, LA
+                County Arts Commission, Hammer Museum, 18th Street Arts Center,
+                Self Help Graphics & Art, Los Angeles Conservancy, Night
+                Gallery, Clockshop.
+              </p>
+            </div>
+            <div className="max-w-[440px] mx-auto">
+              <p>
+                <LogoMark visible={false} />
+                consultants: ARUP, Buro Happold, Thornton Tomasetti, WSP,
+                Glumac, Rios, SALT Landscape Architects, Lam Partners, Tillotson
+                Design Associates, Wrightson Johnson Haddon & Williams, RBA
+                Group
+              </p>
+            </div>
+            <div className="max-w-[440px] mx-auto">
+              <p>
+                <LogoMark visible={false} />
+                site credit: Mental Gymnastics
+              </p>
+            </div>
+            {/* contact block */}
+            <ContactBlock />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs/pages/getting-started?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </PageContainer>
   );
 }
