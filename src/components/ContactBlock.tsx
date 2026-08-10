@@ -6,8 +6,8 @@ export const ContactBlock = () => {
       <p>
         <LogoMark visible={false} />
         contact: We welcome your inquiries. Reach out to us via email at{" "}
-        <a href="mailto:info@perennialstudio.com" className="hover:underline">
-          info@perennialstudio.com
+        <a href="mailto:info@perennialstudio.space" className="hover:underline">
+          info@perennialstudio.space
         </a>
       </p>
     </div>
