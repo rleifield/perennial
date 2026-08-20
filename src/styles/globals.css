@@ -45,7 +45,7 @@ body {
 /* Tailwind's `sm` breakpoint. */
 @media (min-width: 40rem) {
   body {
-    font-size: 21px;
+    font-size: 20px;
     line-height: 24px;
   }
 }
