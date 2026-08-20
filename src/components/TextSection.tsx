@@ -23,7 +23,7 @@ export const TextSection = ({
         // `align-items: stretch`. Without a definite width the box would
         // shrink-wrap its text and the auto margins would then center it,
         // making short copy drift away from the ghosted logo's left edge.
-        "w-full max-w-4/6 sm:max-w-[440px] mx-0 sm:mx-auto px-6 sm:px-0",
+        "w-full max-w-4/5 sm:max-w-[440px] mx-0 sm:mx-auto px-6 sm:px-0",
         className
       )}
     >
