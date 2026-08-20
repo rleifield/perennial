@@ -1,6 +1,9 @@
-import { TextSection } from "@/components/TextSection";
+import {
+  PortableTextSection,
+  type SimpleBlocks,
+} from '@/components/PortableTextSection'
 
-export const ContactBlock = () => {
+export const ContactBlock = ({ blurb }: { blurb: SimpleBlocks }) => {
   return (
     // Sized so that, at the bottom of the scroll, this block's first line lands
     // exactly under the sticky logo. At rest the document's bottom edge meets
@@ -10,14 +13,10 @@ export const ContactBlock = () => {
     //   sm and up 100dvh - 48 - 48 = 100dvh - 96px
     // `dvh` rather than `vh` so the math holds while mobile browser chrome is
     // on screen. Keep in step with PageContainer's padding and Navigation's top.
-    <TextSection
+    <PortableTextSection
+      value={blurb}
       logoMark
       className="h-[calc(100dvh-48px)] sm:h-[calc(100dvh-96px)]"
-    >
-      contact: We welcome your inquiries. Reach out to us via email at{" "}
-      <a href="mailto:info@perennialstudio.space" className="hover:underline">
-        info@perennialstudio.space
-      </a>
-    </TextSection>
-  );
-};
+    />
+  )
+}

@@ -66,6 +66,20 @@ together:
 chrome *hidden*, which would misplace the line whenever the toolbar is on screen.
 The tradeoff is that the block resizes slightly as that toolbar collapses.
 
+## Rich text must not nest a paragraph
+
+`TextSection`'s `logoMark` prop wraps children in a `<p>`. Portable Text emits its
+own `<p>` per block, so passing `<PortableText>` as its children produces nested
+paragraphs — invalid HTML, and it breaks the alignment above.
+
+Render rich text through `src/components/PortableTextSection.tsx` instead. It takes
+the `TextSection` wrapper without `logoMark` and prepends the ghost logo *inside* the
+first block (`index === 0`), which yields the same first-line indent as valid markup.
+`CaseContent` in the same file does the per-block variant for project case studies.
+
+To check: a built page's HTML should never contain a `<p>` inside a `<p>`. The loop in
+"Checking layout changes" below catches it across every prerendered page at once.
+
 ## Checking layout changes
 
 `npm run build` then grep the emitted CSS — it is the ground truth for whether an
@@ -77,3 +91,27 @@ grep -o '[^{}]*100dvh[^}]*}' $(find .next/static -name '*.css' | head -1)
 
 This catches Tailwind silently dropping a class it could not parse. It does not
 catch misalignment, so also look at a real page at both breakpoints.
+
+# Data fetching
+
+Pages are static (`getStaticProps`) with ISR at `revalidate: 60`. Queries live in
+`sanity/queries/`, one file per document type plus `fragments.ts`, each wrapped in
+`defineQuery` with a unique exported name — duplicate names make TypeGen silently
+overwrite types.
+
+Every page fetches the `studio` singleton alongside its own data, because
+`ContactBlock` appears on all of them. Do not hoist that into `_app`:
+`getStaticProps` cannot run there, and `getInitialProps` would opt the whole site out
+of static optimization.
+
+Two TypeGen details that are easy to get wrong:
+
+- The `path` glob in `sanity.cli.ts` **must** include `./sanity`. The default is
+  `./src/**/*`, which finds zero queries here and emits a types file with no query
+  results — no error, just missing types.
+- Generated result types are named `SOME_QUERY_RESULT`, not `SOME_QUERYResult` as
+  older Sanity docs show.
+
+Run `npm run typegen` after changing a schema or a query, then `npx tsc --noEmit`.
+`client.fetch(SOME_QUERY)` is typed automatically via `overloadClientMethods`, so
+pages need no hand-written interfaces.

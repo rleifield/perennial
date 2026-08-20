@@ -13,6 +13,12 @@ import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemaTypes'
 import {structure} from './sanity/structure'
 
+// Types that must exist exactly once. `sanity/structure.ts` pins them to a
+// fixed document id; the `document` hooks below stop a second copy being made
+// any other way — via the global "create new" menu, or duplicate/delete on the
+// document itself.
+const SINGLETONS = ['studio']
+
 export default defineConfig({
   basePath: '/studio',
   projectId,
@@ -25,4 +31,15 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({defaultApiVersion: apiVersion}),
   ],
+  document: {
+    newDocumentOptions: (prev) =>
+      prev.filter((template) => !SINGLETONS.includes(template.templateId)),
+    actions: (prev, {schemaType}) =>
+      SINGLETONS.includes(schemaType)
+        ? prev.filter(
+            ({action}) =>
+              action && !['duplicate', 'delete', 'unpublish'].includes(action)
+          )
+        : prev,
+  },
 })

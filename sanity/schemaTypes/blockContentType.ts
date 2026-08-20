@@ -1,76 +1,57 @@
-import {defineType, defineArrayMember} from 'sanity'
-import {ImageIcon} from '@sanity/icons'
+import {defineArrayMember, defineField, defineType} from 'sanity'
+import {LinkIcon} from '@sanity/icons'
 
 /**
- * This is the schema type for block content used in the post document type
- * Importing this type into the studio configuration's `schema` property
- * lets you reuse it in other document types with:
- *  {
- *    name: 'someName',
- *    title: 'Some title',
- *    type: 'blockContent'
- *  }
+ * The single paragraph block every rich text field on the site is built from.
+ *
+ * Deliberately minimal: body copy and links, nothing else. The design has one
+ * type style, so headings, lists, and decorators (bold/italic) are omitted
+ * rather than styled away on the frontend — if an editor cannot enter it, no
+ * one has to decide how to render it.
+ *
+ * Exported so `caseContent` can reuse the exact same block and only add images.
+ * Sharing the definition by reference is the documented pattern; Sanity treats
+ * these objects as immutable config.
  */
+export const simplifiedBlock = defineArrayMember({
+  type: 'block',
+  // `normal` only — no h1-h4, no blockquote.
+  styles: [{title: 'Normal', value: 'normal'}],
+  lists: [],
+  marks: {
+    // No strong/em. Links are the only inline markup.
+    decorators: [],
+    annotations: [
+      defineField({
+        name: 'link',
+        type: 'object',
+        title: 'Link',
+        icon: LinkIcon,
+        fields: [
+          defineField({
+            name: 'href',
+            type: 'url',
+            title: 'URL',
+            // `mailto` and `tel` are allowed alongside http(s) so contact copy
+            // can link an email address inline.
+            validation: (rule) =>
+              rule.required().uri({scheme: ['http', 'https', 'mailto', 'tel']}),
+          }),
+        ],
+      }),
+    ],
+  },
+})
 
+/**
+ * Text-only rich text: paragraphs and links, no images.
+ *
+ * Reuse on any document with `{name: 'someName', type: 'blockContent'}`.
+ * For content that should also accept images, use `caseContent` instead.
+ */
 export const blockContentType = defineType({
   title: 'Block Content',
   name: 'blockContent',
   type: 'array',
-  of: [
-    defineArrayMember({
-      type: 'block',
-      // Styles let you define what blocks can be marked up as. The default
-      // set corresponds with HTML tags, but you can set any title or value
-      // you want, and decide how you want to deal with it where you want to
-      // use your content.
-      styles: [
-        {title: 'Normal', value: 'normal'},
-        {title: 'H1', value: 'h1'},
-        {title: 'H2', value: 'h2'},
-        {title: 'H3', value: 'h3'},
-        {title: 'H4', value: 'h4'},
-        {title: 'Quote', value: 'blockquote'},
-      ],
-      lists: [{title: 'Bullet', value: 'bullet'}],
-      // Marks let you mark up inline text in the Portable Text Editor
-      marks: {
-        // Decorators usually describe a single property – e.g. a typographic
-        // preference or highlighting
-        decorators: [
-          {title: 'Strong', value: 'strong'},
-          {title: 'Emphasis', value: 'em'},
-        ],
-        // Annotations can be any object structure – e.g. a link or a footnote.
-        annotations: [
-          {
-            title: 'URL',
-            name: 'link',
-            type: 'object',
-            fields: [
-              {
-                title: 'URL',
-                name: 'href',
-                type: 'url',
-              },
-            ],
-          },
-        ],
-      },
-    }),
-    // You can add additional types here. Note that you can't use
-    // primitive types such as 'string' and 'number' in the same array
-    // as a block type.
-    defineArrayMember({
-      type: 'image',
-      icon: ImageIcon,
-      options: {hotspot: true},
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        }
-      ]
-    }),
-  ],
+  of: [simplifiedBlock],
 })
