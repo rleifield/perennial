@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ContactBlock } from "@/components/ContactBlock";
-import { LogoMark } from "@/components/LogoMark";
 import { Navigation } from "@/components/Navigation";
 import { PageContainer } from "@/components/PageContainer";
+import { TextSection } from "@/components/TextSection";
 import { projects } from "@/data/projects";
 
 const SCROLL_KEY = "home-scroll";
@@ -31,68 +31,50 @@ export default function Home() {
   return (
     <PageContainer>
       <Navigation />
-      <div>
-        <div className="-mt-6">
-          <div className="flex flex-col gap-24">
-            {/* homepage top text */}
-            <div className="max-w-[440px] mx-auto">
-              <p>
-                <LogoMark visible={false} />
-                is an architecture and design studio based in Los Angeles,
-                California.
-              </p>
-            </div>
-            {/* projects list */}
-            <div>
-              {/* project item */}
-              {projects.map((project) => (
-                <Link href={`/project/${project.slug}`} key={project.slug}>
-                  <div className="relative">
-                    <img
-                      src={project.mainImage}
-                      alt={project.title}
-                      className="max-h-screen w-full h-full object-contain"
-                    />
-                    <div className="absolute top-6 sm:top-12 right-0 left-0">
-                      <div className="max-w-[440px] mx-auto">
-                        <p>
-                          <LogoMark visible={false} />
-                          <span className="uppercase">{project.title}</span>
-                        </p>
-                      </div>
-                    </div>
+      {/* Pull up by one line-height so the first line of copy shares a line
+          with the sticky logo. Must track body's line-height in globals.css. */}
+      <div className="-mt-5 sm:-mt-6">
+        <div className="flex flex-col gap-24">
+          {/* homepage top text */}
+          <TextSection logoMark>
+            is an architecture and design studio based in Los Angeles,
+            California.
+          </TextSection>
+          {/* projects list */}
+          <div>
+            {/* project item */}
+            {projects.map((project) => (
+              <Link href={`/project/${project.slug}`} key={project.slug}>
+                <div className="relative">
+                  <img
+                    src={project.mainImage}
+                    alt={project.title}
+                    className="max-h-screen w-full h-full object-contain"
+                  />
+                  <div className="absolute top-6 sm:top-12 right-0 left-0">
+                    <TextSection logoMark>
+                      <span className="uppercase">{project.title}</span>
+                    </TextSection>
                   </div>
-                </Link>
-              ))}
-            </div>
-            {/* homepage footer item*/}
-            <div className="max-w-[440px] mx-auto">
-              <p>
-                <LogoMark visible={false} />
-                clients and collaborators: LACA, The Broad, Hauser & Wirth, LA
-                County Arts Commission, Hammer Museum, 18th Street Arts Center,
-                Self Help Graphics & Art, Los Angeles Conservancy, Night
-                Gallery, Clockshop.
-              </p>
-            </div>
-            <div className="max-w-[440px] mx-auto">
-              <p>
-                <LogoMark visible={false} />
-                consultants: ARUP, Buro Happold, Thornton Tomasetti, WSP,
-                Glumac, Rios, SALT Landscape Architects, Lam Partners, Tillotson
-                Design Associates, Wrightson Johnson Haddon & Williams, RBA
-                Group
-              </p>
-            </div>
-            <div className="max-w-[440px] mx-auto">
-              <p>
-                <LogoMark visible={false} />
-                site credit: Mental Gymnastics
-              </p>
-            </div>
-            {/* contact block */}
-            <ContactBlock />
+                </div>
+              </Link>
+            ))}
           </div>
+          {/* homepage footer item*/}
+          <TextSection logoMark>
+            clients and collaborators: LACA, The Broad, Hauser & Wirth, LA
+            County Arts Commission, Hammer Museum, 18th Street Arts Center, Self
+            Help Graphics & Art, Los Angeles Conservancy, Night Gallery,
+            Clockshop.
+          </TextSection>
+          <TextSection logoMark>
+            consultants: ARUP, Buro Happold, Thornton Tomasetti, WSP, Glumac,
+            Rios, SALT Landscape Architects, Lam Partners, Tillotson Design
+            Associates, Wrightson Johnson Haddon & Williams, RBA Group
+          </TextSection>
+          <TextSection logoMark>site credit: Mental Gymnastics</TextSection>
+          {/* contact block */}
+          <ContactBlock />
         </div>
       </div>
     </PageContainer>

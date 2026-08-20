@@ -3,6 +3,7 @@ import { ContactBlock } from "@/components/ContactBlock";
 import { LogoMark } from "@/components/LogoMark";
 import { Navigation } from "@/components/Navigation";
 import { PageContainer } from "@/components/PageContainer";
+import { TextSection } from "@/components/TextSection";
 import { projects } from "@/data/projects";
 
 export default function Index() {
@@ -10,7 +11,9 @@ export default function Index() {
     <PageContainer>
       <Navigation />
       <div className="min-h-screen">
-        <div className="max-w-[440px] mx-auto -mt-6">
+        {/* Pull up by one line-height so the first entry shares a line with
+            the sticky logo. Tracks body's line-height in globals.css. */}
+        <TextSection className="-mt-5 sm:-mt-6">
           {projects.map((project) => (
             <p key={project.slug}>
               <LogoMark visible={false} />
@@ -22,7 +25,7 @@ export default function Index() {
               </Link>
             </p>
           ))}
-        </div>
+        </TextSection>
       </div>
       {/* contact block */}
       <ContactBlock />

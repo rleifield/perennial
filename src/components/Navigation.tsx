@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { LogoMark } from "@/components/LogoMark";
+import { TextSection } from "@/components/TextSection";
 
 export const Navigation = () => {
   const { pathname } = useRouter();
@@ -12,15 +13,19 @@ export const Navigation = () => {
     : { href: "/i", label: "index", scroll: true };
 
   return (
-    <div className="sticky top-12 z-20 pointer-events-none">
-      <div className="absolute top-0 left-0">
+    // These offsets mirror PageContainer's `py-6 sm:py-12`, so the logo pins
+    // exactly where it already sits and never jumps on the first scroll.
+    <div className="sticky top-6 sm:top-12 z-20 pointer-events-none">
+      {/* index/close sits in the top corner: right on mobile so it clears the
+          logo, left on desktop where there is room for both. */}
+      <div className="absolute top-0 right-0 sm:left-0 sm:right-auto px-6 sm:px-12">
         <Link href={link.href} className="hover:underline pointer-events-auto">
           {link.label}
         </Link>
       </div>
-      <div className="max-w-[440px] mx-auto">
+      <TextSection>
         <LogoMark visible={true} />
-      </div>
+      </TextSection>
     </div>
   );
 };

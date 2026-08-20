@@ -30,10 +30,22 @@
   }
 }
 
+/* Type is set mobile-first. The line-height here is load-bearing: Navigation is
+   exactly one line box tall, and each page pulls its content up by one
+   line-height (`-mt-5 sm:-mt-6`) so the first line of copy shares a line with
+   the sticky logo. Change a line-height and change that margin to match. */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Neue Haas Unica", Arial, Helvetica, sans-serif;
-  font-size: 21px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 20px;
+}
+
+/* Tailwind's `sm` breakpoint. */
+@media (min-width: 40rem) {
+  body {
+    font-size: 21px;
+    line-height: 24px;
+  }
 }

@@ -2,7 +2,8 @@ import { useRouter } from "next/router";
 import { ContactBlock } from "@/components/ContactBlock";
 import { Navigation } from "@/components/Navigation";
 import { PageContainer } from "@/components/PageContainer";
-import { LogoMark } from "@/components/LogoMark";
+import { ProjectImage } from "@/components/ProjectImage";
+import { TextSection } from "@/components/TextSection";
 import { projects } from "@/data/projects";
 
 const ProjectPage = () => {
@@ -16,27 +17,20 @@ const ProjectPage = () => {
   return (
     <PageContainer>
       <Navigation />
-      <div className="-mt-6">
+      {/* Pull up by one line-height so the first line of copy shares a line
+          with the sticky logo. Must track body's line-height in globals.css. */}
+      <div className="-mt-5 sm:-mt-6">
         <div className="flex flex-col gap-24">
           {/* project title */}
-          <div className="w-full max-w-[440px] mx-auto">
-            <p>
-              <LogoMark visible={false} />
-              <span className="uppercase">{project.title}</span>
-            </p>
-          </div>
+          <TextSection logoMark>
+            <span className="uppercase">{project.title}</span>
+          </TextSection>
           {/* Project stack */}
-          <div className="flex flex-col gap-24 items-center">
+          <div className="flex flex-col gap-24">
             {/* main image */}
-            <div className="w-full sm:w-auto">
-              <img
-                src={project.mainImage}
-                alt={project.title}
-                className="w-full h-auto object-contain sm:w-auto sm:max-w-[960px] sm:max-h-[960px]"
-              />
-            </div>
+            <ProjectImage src={project.mainImage} alt={project.title} />
             {/* blurb + information */}
-            <div className="max-w-[440px] mx-auto flex flex-col gap-6">
+            <TextSection className="flex flex-col gap-6">
               <p>{project.projectBlurb}</p>
               <div className="flex flex-col gap-6">
                 <p>Information</p>
@@ -48,21 +42,15 @@ const ProjectPage = () => {
                   ))}
                 </ul>
               </div>
-            </div>
+            </TextSection>
             {/* stack blocks */}
             {project.projectStack.map((block, index) =>
               block.type === "image" ? (
-                <div key={index} className="w-full sm:w-auto">
-                  <img
-                    src={block.image}
-                    alt={block.alt}
-                    className="w-full h-auto object-contain sm:w-auto sm:max-w-[960px] sm:max-h-[960px]"
-                  />
-                </div>
+                <ProjectImage key={index} src={block.image} alt={block.alt} />
               ) : (
-                <div key={index} className="max-w-[440px] mx-auto">
+                <TextSection key={index}>
                   <p>{block.text}</p>
-                </div>
+                </TextSection>
               )
             )}
           </div>
